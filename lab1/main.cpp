@@ -2,12 +2,14 @@
 #include "classes.h"
 
 int main(){
-    point myPoint(10.5, 12.56);
+    point myPoint(0, 0, 0);
+
     myPoint.setValue(12345);
+    myPoint.setCoords(115.6, 124.743);
     myPoint.printData();
+
     myPoint.pollData();
     myPoint.printData();
+
     return 0;
 }
-
-

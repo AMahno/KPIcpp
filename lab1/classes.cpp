@@ -3,9 +3,10 @@
 #include <iostream>
 using namespace std;
 
-point::point(float X = 0, float Y = 0){ //constructor, with value initialization
+point::point(float X, float Y, int theValue){ //constructor, with value initialization
     x = X;
     y = Y;
+    value = theValue;
 }
 
 //!point::point(const point &); //copying one
@@ -29,13 +30,12 @@ point& point::setValue(int valueToSet){
 
 //user interaction functions
 void point::printData(){
-    cout << "Created point" << endl;
     cout << "Coordinates: " << x << ", " << y << endl;
     cout << "Value: " << value << endl;
 }
 
 point& point::pollData(){
-    cout << "Changing data.\nEnter new X:" << endl;
+    cout << "\nChanging data.\nEnter new X:" << endl;
     cin >> x;
     cout << "New Y: " << endl;
     cin >> y;

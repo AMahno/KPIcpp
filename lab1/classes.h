@@ -7,7 +7,7 @@ private:
     float x, y; //somehow I think that this is better than the array
     int value;
 public:
-    point(float, float); //constructor
+    point(float, float, int); //constructor
     point(const point &); //with copying (look into classes.cpp, there is some weird stuff about this)
     ~point(); //destructor
     inline float getX() const {return x;};
