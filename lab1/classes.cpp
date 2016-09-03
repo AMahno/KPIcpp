@@ -13,6 +13,10 @@ point::point(float X, float Y, int theValue){ //constructor, with value initiali
 //! x and y init here?
 
 point::~point(){
+    delete &x;
+    delete &y;
+    delete &value;
+    //delete this; //<- a bit too much
     //cout << "deleted" << endl; //ok, so that works
 }
 
