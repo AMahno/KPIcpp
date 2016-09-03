@@ -9,8 +9,17 @@ point::point(float X, float Y, int theValue){ //constructor, with value initiali
     value = theValue;
 }
 
-//!point::point(const point &); //copying one
-//! x and y init here?
+point::point(){
+    x = 0;
+    y = 0;
+    value = 0;
+}
+
+point::point(const point &inputPoint){
+    x = inputPoint.getX();
+    y = inputPoint.getY();
+    value = inputPoint.getValue();
+}
 
 point::~point(){
     delete &x;
