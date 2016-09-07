@@ -9,9 +9,11 @@ private:
 public:
     point(); //default constructor
     point(float, float, int); //constructor with input values
-    point(const point &); //with copying (look into classes.cpp, there is some weird stuff about this)
+    point(const point &); //with copying
     ~point(); //destructor
-    inline float getX() const {return x;};
+    inline float getX() const {
+        return x;
+        };
     inline float getY() const {return y;};
     inline int getValue() const {return value;}; //yes, these should be outside-defined, but I don't how how to do that
     void printData(); //user interaction
