@@ -6,20 +6,26 @@ class point{
 private:
     float x, y; //somehow I think that this is better than the array
     int value;
+    char *name;
+    int name_size;
 public:
     point(); //default constructor
-    point(float, float, int); //constructor with input values
+    point(float, float, int, char*, int); //constructor with input values
     point(const point &); //with copying
     ~point(); //destructor
-    inline float getX() const {
-        return x;
-        };
-    inline float getY() const {return y;};
-    inline int getValue() const {return value;}; //yes, these should be outside-defined, but I don't how how to do that
+    float getX() const;
+    float getY() const;
+    int getValue() const;
+    char* getName() const;
+    int getNameSize() const;
+    void printName();
     void printData(); //user interaction
     point& pollData();
     point& setCoords(float, float); //set functions
+    point& setName(char*, int);
     point& setValue(int);
 };
+
+void printData(const point &inputPoint);
 
 #endif // CLASSES_H_INCLUDED
