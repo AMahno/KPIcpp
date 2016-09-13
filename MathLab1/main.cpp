@@ -7,7 +7,7 @@ using namespace std;
 
 int main(){
     cout << "Enter the matrix size, one number: ";
-    int aSize = 1;
+    int aSize = 1; //in case cin fails
     cin >> aSize;
     cout << "Enter the matrix:" << endl;
     MatrixXd A = MatrixXd(aSize,aSize);
