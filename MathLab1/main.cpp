@@ -6,8 +6,19 @@ using Eigen::EigenSolver;
 using namespace std;
 
 int main(){
-    MatrixXd A = MatrixXd::Random(6,6);
-    cout << "Here is a random 6x6 matrix, A:" << endl << A << endl << endl;
+    cout << "Enter the matrix size, one number: ";
+    int aSize = 1;
+    cin >> aSize;
+    cout << "Enter the matrix:" << endl;
+    MatrixXd A = MatrixXd(aSize,aSize);
+    A.setZero();
+    for(int i = 0; i < aSize; i++){
+        for(int j = 0; j < aSize; j++){
+            cout << "Enter the member (" << i << ", " << j << "): ";
+            cin >>  A(i, j);
+        }
+    }
+    cout << "\nHere is a matrix A:" << endl << A << endl << endl;
     EigenSolver<MatrixXd> es(A);
     cout << "The eigenvalues of A are:" << endl << es.eigenvalues() << endl;
 }
