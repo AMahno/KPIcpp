@@ -4,34 +4,38 @@
 #include <cstring>
 using namespace std;
 
-point::point(float X, float Y, int theValue, char* theName, int theNameSize){ //constructor, with value initialization
+point::point(float X, float Y, int theValue, char* theName){ //constructor, with value initialization
     x = X;
     y = Y;
     value = theValue;
-
-    name = new char[theNameSize+1]();
+    type = POINT;
+    name = new char[strlen(theName)];
     strcpy(name, theName);
-    name_size = theNameSize+1;
 }
 
-point::point(){ //!ADD CHAR TO CONSTRUCTORS
+point::point(){
     x = 0;
     y = 0;
     value = 0;
+    type = POINT;
+    name = NULL;
 }
 
 point::point(const point &inputPoint){
     x = inputPoint.getX();
     y = inputPoint.getY();
     value = inputPoint.getValue();
+    type = POINT;
+    if(inputPoint.getName()){
+        name = new char[strlen(inputPoint.getName())];
+        strcpy(name, inputPoint.getName());
+    }else{
+        name = NULL;
+    }
 }
 
 point::~point(){
-    delete &x;
-    delete &y;
-    delete &value;
-    //delete this; //<- a bit too much
-    //cout << "deleted" << endl; //ok, so that works
+    if(name) delete []name;
 }
 
 //set functions, returning "this", as a reference
@@ -46,13 +50,13 @@ point& point::setValue(int valueToSet){
     return *this;
 }
 
-point& point::setName(char* nameToSet, int newNameSize){
-    if(newNameSize < name_size){
+point& point::setName(char* nameToSet){
+    if(strlen(nameToSet) < strlen(name)){
         strcpy(name, nameToSet);
     }else{
         delete[] name;
-        name = new char[newNameSize+1]();
-        name_size = newNameSize+1;
+        name = new char[strlen(nameToSet)]();
+        strcpy(name, nameToSet);
     }
     return *this;
 }
@@ -61,29 +65,29 @@ point& point::setName(char* nameToSet, int newNameSize){
 inline float point::getY() const {return y;};
 inline float point::getX() const {return x;};
 inline int point::getValue() const {return value;};
-
 char* point::getName() const {return name;};
-int point::getNameSize() const {return name_size;};
 
 //user interaction functions
 void point::printData(){
     cout << "Coordinates: " << x << ", " << y << endl;
     cout << "Value: " << value << endl;
+    if(name){
+        cout << "Name: " << name << endl;
+    }else{
+        cout << "Name: empty" << endl;
+    }
+    cout << "Type: " << type << endl;
 }
 
-void point::printName(){
-    char* tmpChar = new char[name_size+1]();
-    strcpy(tmpChar, name);
-    cout << tmpChar << endl;
-    delete[] tmpChar;
-}
 
 point& point::pollData(){
     cout << "\nChanging data.\nEnter new X:" << endl;
     cin >> x;
     cout << "New Y: " << endl;
     cin >> y;
-    cout << "And new value: " << endl;
+    cout << "New value: " << endl;
     cin >> value;
+    cout << "And new name: " << endl;
+    cin >> name;
     return *this;
 }
