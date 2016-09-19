@@ -7,7 +7,7 @@
 #include <GL/glut.h>
 #include <conio.h>
 
-#define MAX_INDEX 16
+#define MAX_INDEX 100
 #define ZOOM M_PI
 
 using namespace std;
@@ -18,8 +18,9 @@ double argument;
 double myResult;
 
 int main(int argc, char* argv[]){
-    cout << "Enter the argument: ";
+    cout << "Enter the argument in rads: ";
     cin >> argument;
+    argument /= M_PI;
     cout << "Enter the precision: ";
     double precison;
     cin >> precison;
@@ -41,7 +42,7 @@ int main(int argc, char* argv[]){
 }
 
 //2 0.1
-//1 0.001
+//1 0.0~01
 
 double bicyleCTG(double arg, double precision){
     if(arg > -M_PI && arg < M_PI){
@@ -55,8 +56,8 @@ double bicyleCTG(double arg, double precision){
             float denumerator = factorial(2*n);
             u = (float) numerator/denumerator;
             sum += u;
-            cout << dBernoulli[2*n] << endl;
-            //cout << "#" << n << ": " << u << endl;
+            //cout << dBernoulli[2*n] << endl;
+            cout << "#" << n << ": " << u << endl;
             n++;
         }while(u > precision);
         float result = (float) 1/arg - sum;
@@ -81,6 +82,33 @@ void display(){
         glVertex2f(0.0f, 1.0f);
     glEnd();
 
+    glBegin(GL_LINES);
+    for (float i = 0.0f; i<M_PI; i+=0.1) {
+        glVertex2f(i, 0.01f);
+        glVertex2f(i, -0.01f);
+    }
+    for (float i = 0.0f; i>-M_PI; i-=0.1) {
+        glVertex2f(i, 0.01f);
+        glVertex2f(i, -0.01f);
+    }
+    glEnd();
+
+    glBegin(GL_LINES);
+    for (float i = 0.0f; i<M_PI; i+=0.1) {
+        glVertex2f(0.01f, i);
+        glVertex2f(-0.01f, i);
+    }
+    for (float i = 0.0f; i>-M_PI; i-=0.1) {
+        glVertex2f(0.01f, i);
+        glVertex2f(-0.01f, i);
+    }
+    glEnd();
+
+    glRasterPos2f(0.1f, -0.05f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '1');
+    glRasterPos2f(-0.05f, 0.1f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '1');
+
     glBegin(GL_LINE_STRIP);
         glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
         for (float x = -M_PI; x <= M_PI; x += 0.01) {
@@ -88,6 +116,7 @@ void display(){
             glVertex2f(x /ZOOM, y);
         }
     glEnd();
+
 
     glBegin(GL_LINE_STRIP);
         glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
