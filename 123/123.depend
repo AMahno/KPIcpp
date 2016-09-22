@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1474361818 source:d:\main.cpp
+	<conio.h>
+	<iostream>
+	<ctime>
+	<cmath>
+	<time.h>
+

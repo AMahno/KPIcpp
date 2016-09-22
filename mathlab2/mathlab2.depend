@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1474320351 source:c:\cppworkspace\mathlab2\main.cpp
+1474363575 source:c:\cppworkspace\mathlab2\main.cpp
 	<stdio.h>
 	<iostream>
 	<math.h>
