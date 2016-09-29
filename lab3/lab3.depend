@@ -1,14 +1,14 @@
 # depslib dependency file v1.0
-1475170544 source:c:\cppworkspace\lab3\classes.cpp
+1475175844 source:c:\cppworkspace\lab3\classes.cpp
 	"classes.h"
 	<iostream>
 	<cstring>
 	<ostream>
 
-1475169805 c:\cppworkspace\lab3\classes.h
+1475176063 c:\cppworkspace\lab3\classes.h
 	<ostream>
 
-1475170464 source:c:\cppworkspace\lab3\main.cpp
+1475175982 source:c:\cppworkspace\lab3\main.cpp
 	<iostream>
 	"classes.h"
 

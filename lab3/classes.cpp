@@ -69,6 +69,19 @@ ostream& operator << (ostream &stream, const FractionPoint& input){
      "\nName: " << input.getName() << "\nDenominator: " << input.getDenominator() << endl;
 }
 
+istream& operator >> (istream &stream, FractionPoint& input){
+    float tmpX, tmpY;
+    int tmpValue, tmpDenom;
+    char *tmpChar;
+    stream >> tmpX >> tmpY >> tmpValue >> tmpChar >> tmpDenom;
+    input.setX(tmpX);
+    input.setY(tmpY);
+    input.setValue(tmpValue);
+    input.setName(tmpChar);
+    input.setDenominator(tmpDenom);
+    return stream;
+}
+
 
 //constructors
 ComplexPoint::ComplexPoint(){
@@ -131,6 +144,19 @@ ostream& operator << (ostream &stream, const ComplexPoint& input){
     "\nName: " << input.getName() << "\nComplex part: " << input.getComplexPart() << endl;
 }
 
+istream& operator >> (istream &stream, ComplexPoint& input){
+    float tmpX, tmpY;
+    int tmpValue, tmpComplex;
+    char *tmpChar;
+    stream >> tmpX >> tmpY >> tmpValue >> tmpChar >> tmpComplex;
+    input.setX(tmpX);
+    input.setY(tmpY);
+    input.setValue(tmpValue);
+    input.setName(tmpChar);
+    input.setComplexPart(tmpComplex);
+    return stream;
+}
+
 //original class here
 point::point(float X, float Y, int theValue, char* theName){ //constructor, with value initialization
     type = POINT;
@@ -167,8 +193,12 @@ point::~point(){
 }
 
 //set functions, returning "this", as a reference
-point& point::setCoords(float X, float Y){
+point& point::setX(float X){
     x = X;
+    return *this;
+}
+
+point& point::setY(float Y){
     y = Y;
     return *this;
 }
@@ -199,14 +229,14 @@ ostream& operator << (std::ostream &stream, const point& thePoint){
     return stream << "X: " << thePoint.getX() << ", Y: " << thePoint.getY() << ", Value: " << thePoint.getValue() << "\nName: " << thePoint.getName() << endl;
 }
 
-point& point::pollData(){
-    cout << "\nChanging data.\nEnter new X:" << endl;
-    cin >> x;
-    cout << "New Y: " << endl;
-    cin >> y;
-    cout << "New value: " << endl;
-    cin >> value;
-    cout << "And new name: " << endl;
-    cin >> name;
-    return *this;
+istream& operator >> (istream &stream, point& input){
+    float tmpX, tmpY;
+    int tmpValue;
+    char *tmpChar;
+    stream >> tmpX >> tmpY >> tmpValue >> tmpChar;
+    input.setX(tmpX);
+    input.setY(tmpY);
+    input.setValue(tmpValue);
+    input.setName(tmpChar);
+    return stream;
 }

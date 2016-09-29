@@ -21,12 +21,13 @@ public:
     point(const point &); //with copying
     virtual ~point(); //destructor
     friend std::ostream& operator << (std::ostream &, const point &);
+    friend std::istream& operator >> (std::istream &, point &);
     float getX() const;
     float getY() const;
     int getValue() const;
     char* getName() const;
-    point& pollData();
-    point& setCoords(float, float); //set functions
+    point& setX(float);
+    point& setY(float);
     point& setName(char*);
     point& setValue(int);
 };
@@ -42,6 +43,7 @@ public:
     FractionPoint operator + (const FractionPoint &);
     FractionPoint& operator - ();
     friend std::ostream& operator << (std::ostream &, const FractionPoint &);
+    friend std::istream& operator >> (std::istream &, FractionPoint &);
     int getDenominator() const;
     FractionPoint& setDenominator(int);
     virtual void print();
@@ -58,6 +60,7 @@ public:
     ComplexPoint operator + (const ComplexPoint &);
     ComplexPoint& operator - ();
     friend std::ostream& operator << (std::ostream &, const ComplexPoint &);
+    friend std::istream& operator >> (std::istream &, ComplexPoint &);
     int getComplexPart() const;
     ComplexPoint& setComplexPart(int);
     virtual void print();

@@ -5,10 +5,10 @@ using namespace std;
 
 int main(){
     cout << "Creating deriative classes." << endl;
-    ComplexPoint deriative1(4, 5, 1, 3, "FOO");
+    ComplexPoint deriative1(4, 5, 1, 3, "F00");
     ComplexPoint deriative2(3, 1, 4, 5, "FBB");
     FractionPoint deriative3(7, 6, 2, 3, "BAR");
-    FractionPoint deriative4(3, 2, 7, 6, "B@R");
+    FractionPoint deriative4(3, 2, 7, 6, "B0R");
 
     cout << "\nUsing new cout stuff:" << endl;
     cout << deriative1;
@@ -34,6 +34,14 @@ int main(){
 
     cout << "\nAdding and assigning complex numbers:" << endl;
     deriative1 = deriative1+deriative2;
+    cout << deriative1;
+
+    cout << "New cin stuff for fractions: enter x, y, value, name and denominator:" << endl;
+    cin >> deriative3;
+    cout << deriative3;
+
+    cout << "New cin stuff for complex numbers: enter x, y, value, name and complex part:" << endl;
+    cin >> deriative1;
     cout << deriative1;
     return 0;
 }
