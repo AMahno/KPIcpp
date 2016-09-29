@@ -1,6 +1,7 @@
 //Copyright (c) Aleksander Mahnyov, 2016. All rights reserved
 #ifndef CLASSES_H_INCLUDED
 #define CLASSES_H_INCLUDED
+#include <ostream>
 
 enum{
     POINT = 0,
@@ -18,12 +19,12 @@ public:
     point(); //default constructor
     point(float, float, int, char*); //constructor with input values
     point(const point &); //with copying
-    ~point(); //destructor
+    virtual ~point(); //destructor
+    friend std::ostream& operator << (std::ostream &, const point &);
     float getX() const;
     float getY() const;
     int getValue() const;
     char* getName() const;
-    void printData(); //user interaction
     point& pollData();
     point& setCoords(float, float); //set functions
     point& setName(char*);
@@ -36,10 +37,14 @@ private:
 public:
     FractionPoint();
     FractionPoint(float, float, int, int, char*);
+    void operator = (const FractionPoint &);
+    bool operator < (const FractionPoint &);
+    FractionPoint operator + (const FractionPoint &);
+    FractionPoint& operator - ();
+    friend std::ostream& operator << (std::ostream &, const FractionPoint &);
     int getDenominator() const;
     FractionPoint& setDenominator(int);
-    void print();
-    void printData();
+    virtual void print();
 };
 
 class ComplexPoint : public point {
@@ -48,14 +53,15 @@ private:
 public:
     ComplexPoint();
     ComplexPoint(float, float, int, int, char*);
+    void operator = (const ComplexPoint &);
+    bool operator < (const ComplexPoint &);
+    ComplexPoint operator + (const ComplexPoint &);
+    ComplexPoint& operator - ();
+    friend std::ostream& operator << (std::ostream &, const ComplexPoint &);
     int getComplexPart() const;
     ComplexPoint& setComplexPart(int);
-    void print();
-    void printData(); //reloading
+    virtual void print();
 };
 
-class Test : public ComplexPoint, public FractionPoint {
-    int a;
-};
 
 #endif // CLASSES_H_INCLUDED

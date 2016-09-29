@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1474567153 source:c:\cppworkspace\lab2\classes.cpp
+1474628411 source:c:\cppworkspace\lab2\classes.cpp
 	"classes.h"
 	<iostream>
 	<cstring>
 
-1474566597 c:\cppworkspace\lab2\classes.h
+1475161168 c:\cppworkspace\lab2\classes.h
 
-1474566922 source:c:\cppworkspace\lab2\main.cpp
+1474628419 source:c:\cppworkspace\lab2\main.cpp
 	<iostream>
 	"classes.h"
 

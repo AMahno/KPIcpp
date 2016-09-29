@@ -2,6 +2,7 @@
 #include "classes.h"
 #include <iostream>
 #include <cstring>
+#include <ostream>
 using namespace std;
 
 //deriative classes (FractionPoint and ComplexPoint) are also here
@@ -18,6 +19,7 @@ FractionPoint::FractionPoint(){
 FractionPoint::FractionPoint(float X, float Y, int theValue, int theDenominator, char* theName)
 : point(X, Y, theValue, theName) {
     type = FRACTION;
+    denominator = theDenominator;
 }
 
 //get function
@@ -35,10 +37,36 @@ void FractionPoint::print(){
     else cout << value << "/" << denominator << endl;
 }
 
-//reloading
-void FractionPoint::printData(){
-    point::printData();
-    cout << "Denominator: " << denominator << endl;
+//operators here
+void FractionPoint::operator = (const FractionPoint& input){
+    x = input.getX();
+    y = input.getY();
+    value = input.getValue();
+    denominator = input.getDenominator();
+    this->setName(input.getName());
+}
+
+//basic fraction compare function. I think, it might be somewhat dangerous
+bool FractionPoint::operator < (const FractionPoint& inputPoint){
+    long upper = value * inputPoint.getDenominator();
+    long lower = denominator * inputPoint.getValue();
+    return upper<lower;
+}
+
+//ask if this will copy a whole object
+FractionPoint FractionPoint::operator + (const FractionPoint &inputPoint){
+    FractionPoint tmpPoint(x, y, value*inputPoint.getDenominator()+denominator*inputPoint.getValue(), denominator*inputPoint.getDenominator(), name);
+    return tmpPoint;
+}
+
+FractionPoint& FractionPoint::operator - (){
+    value = -value;
+    return *this;
+}
+
+ostream& operator << (ostream &stream, const FractionPoint& input){
+    return stream << "X: " << input.getX() << ", Y: " << input.getY() << ", Value: " << input.getValue() <<
+     "\nName: " << input.getName() << "\nDenominator: " << input.getDenominator() << endl;
 }
 
 
@@ -75,12 +103,33 @@ void ComplexPoint::print(){
     else cout << complexPart << "i" << endl;
 }
 
-//reloading
-void ComplexPoint::printData() {
-    point::printData();
-    cout << "Complex part: " << complexPart << endl;
+//operators here:
+void ComplexPoint::operator = (const ComplexPoint& input){
+    x = input.getX();
+    y = input.getY();
+    value = input.getValue();
+    complexPart = input.getComplexPart();
+    this->setName(input.getName());
 }
 
+//you can't compare complex numbers in complex space, so I will just compare real parts
+bool ComplexPoint::operator < (const ComplexPoint& inputPoint){
+    return value<inputPoint.getValue();
+}
+
+ComplexPoint ComplexPoint::operator + (const ComplexPoint &inputPoint){
+    ComplexPoint tmpPoint(x, y, value+inputPoint.getValue(), complexPart+inputPoint.getComplexPart(), name);
+    return tmpPoint;
+}
+
+ComplexPoint& ComplexPoint::operator - (){ //re = re1*re2 - im1*im2, where im2 = 0, cos -1 = -1 + i*0
+    value = -value;
+}
+
+ostream& operator << (ostream &stream, const ComplexPoint& input){
+    return stream << "X: " << input.getX() << ", Y: " << input.getY() << ", Value: " << input.getValue() <<
+    "\nName: " << input.getName() << "\nComplex part: " << input.getComplexPart() << endl;
+}
 
 //original class here
 point::point(float X, float Y, int theValue, char* theName){ //constructor, with value initialization
@@ -146,17 +195,9 @@ inline float point::getX() const {return x;};
 inline int point::getValue() const {return value;};
 char* point::getName() const {return name;};
 
-//user interaction functions
-void point::printData(){
-    cout << "Coordinates: " << x << ", " << y << endl;
-    cout << "Value: " << value << endl;
-    if(name){
-        cout << "Name: " << name << endl;
-    }else{
-        cout << "Name: empty" << endl;
-    }
+ostream& operator << (std::ostream &stream, const point& thePoint){
+    return stream << "X: " << thePoint.getX() << ", Y: " << thePoint.getY() << ", Value: " << thePoint.getValue() << "\nName: " << thePoint.getName() << endl;
 }
-
 
 point& point::pollData(){
     cout << "\nChanging data.\nEnter new X:" << endl;
