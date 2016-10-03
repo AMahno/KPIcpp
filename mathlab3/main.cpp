@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include<iostream>
-
+#include <iostream>
+#include <GL/glut.h>
+#include <conio.h>
+#define ZOOM M_PI
 using namespace std;
 
 inline float q(float x, float x0, float h){ return (x - x0) / h; }
@@ -15,13 +17,23 @@ float* getExpTable(float, float, int);
 float Q(float, float, float, int);
 void showDiffTable(float, float, float** a, int size);
 void approximate(float argument);
+void display();
 
+float argument;
+float myResult;
 
-int main(void){
-    float x;
+int main(int argc, char* argv[]){
 	cout << "Enter the argument ";
-	cin >> x;
-	approximate(x);
+	cin >> argument;
+	approximate(argument);
+	_getch();
+    glutInit(&argc, argv);
+    glutCreateWindow("Graph");
+    glutInitWindowSize(1, 1);
+    glutReshapeWindow(800, 600);
+    glutInitWindowPosition(0, 0);
+    glutDisplayFunc(display);
+    glutMainLoop();
 	return 0;
 }
 
@@ -57,11 +69,13 @@ void approximate(float x){
 	cout << "Real value:  " << 1/tan(x) << "\n";
 	cout << "Absolute error:  " << fabs(P - 1/tan(x)) << "\n";
 	cout << "Relative error:  " << fabs(P - 1/tan(x)) / P * 100 << "%\n";
+	myResult = P;
     }else{
     cout << "Calculated by own function:  " << (-1)*P << "\n";
 	cout << "Real value:  " << (-1)*1/tan(x) << "\n";
 	cout << "Absolute error:  " << fabs(P - 1/tan(x)) << "\n";
 	cout << "Relative error:  " << fabs(P - 1/tan(x)) / P * 100 << "%\n";
+	myResult = (-1)*P;
     }
 }
 
@@ -146,4 +160,34 @@ void showDiffTable(float first, float h, float** a, int size)
 		}
 		cout << "\n";
 	}
+}
+
+void display(){
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBegin(GL_LINES);
+        glVertex2f(-1.0f, 0.0f);
+        glVertex2f(1.0f, 0.0f);
+        glVertex2f(0.0f, -1.0f);
+        glVertex2f(0.0f, 1.0f);
+    glEnd();
+
+    glBegin(GL_LINE_STRIP);
+        glColor4f(0.0f, 1.0f, 0.0f, 0.5f);
+        for (float x = -M_PI; x <= M_PI; x += 0.01) {
+            float y = 1 / tan(x) / M_PI;
+            glVertex2f(x /M_PI, y);
+        }
+    glEnd();
+
+
+    glBegin(GL_LINE_STRIP);
+        glColor4f(1.0f, 0.0f, 0.0f, 0.5f);
+        glVertex2f(0.0f, myResult/M_PI);
+        glVertex2f(argument/M_PI, myResult/M_PI);
+        glVertex2f(argument/M_PI, 0.0f);
+    glEnd();
+
+    glFlush();
 }

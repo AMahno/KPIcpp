@@ -1,7 +1,9 @@
 # depslib dependency file v1.0
-1475515636 source:c:\cppworkspace\mathlab3\main.cpp
+1475517338 source:c:\cppworkspace\mathlab3\main.cpp
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
 	<iostream>
+	<GL/glut.h>
+	<conio.h>
 
