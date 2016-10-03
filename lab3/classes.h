@@ -30,6 +30,7 @@ public:
     point& setY(float);
     point& setName(char*);
     point& setValue(int);
+    virtual void print();
 };
 
 class FractionPoint : public point {

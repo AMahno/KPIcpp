@@ -53,7 +53,7 @@ bool FractionPoint::operator < (const FractionPoint& inputPoint){
     return upper<lower;
 }
 
-//ask if this will copy a whole object
+//!ask if this will copy a whole object
 FractionPoint FractionPoint::operator + (const FractionPoint &inputPoint){
     FractionPoint tmpPoint(x, y, value*inputPoint.getDenominator()+denominator*inputPoint.getValue(), denominator*inputPoint.getDenominator(), name);
     return tmpPoint;
@@ -64,14 +64,17 @@ FractionPoint& FractionPoint::operator - (){
     return *this;
 }
 
+//!ask how to do this better, if possible
 ostream& operator << (ostream &stream, const FractionPoint& input){
+    //const point *pointPtr = &input;
+    //return stream << *pointPtr;
     return stream << "X: " << input.getX() << ", Y: " << input.getY() << ", Value: " << input.getValue() <<
      "\nName: " << input.getName() << "\nDenominator: " << input.getDenominator() << endl;
 }
 
 istream& operator >> (istream &stream, FractionPoint& input){
-    float tmpX, tmpY;
-    int tmpValue, tmpDenom;
+    float tmpX = 0, tmpY = 0;
+    int tmpValue = 0, tmpDenom = 1;
     char *tmpChar;
     stream >> tmpX >> tmpY >> tmpValue >> tmpChar >> tmpDenom;
     input.setX(tmpX);
@@ -81,7 +84,6 @@ istream& operator >> (istream &stream, FractionPoint& input){
     input.setDenominator(tmpDenom);
     return stream;
 }
-
 
 //constructors
 ComplexPoint::ComplexPoint(){
@@ -137,6 +139,7 @@ ComplexPoint ComplexPoint::operator + (const ComplexPoint &inputPoint){
 
 ComplexPoint& ComplexPoint::operator - (){ //re = re1*re2 - im1*im2, where im2 = 0, cos -1 = -1 + i*0
     value = -value;
+    return *this;
 }
 
 ostream& operator << (ostream &stream, const ComplexPoint& input){
@@ -145,8 +148,8 @@ ostream& operator << (ostream &stream, const ComplexPoint& input){
 }
 
 istream& operator >> (istream &stream, ComplexPoint& input){
-    float tmpX, tmpY;
-    int tmpValue, tmpComplex;
+    float tmpX = 0, tmpY = 0;
+    int tmpValue = 0, tmpComplex = 0;
     char *tmpChar;
     stream >> tmpX >> tmpY >> tmpValue >> tmpChar >> tmpComplex;
     input.setX(tmpX);
@@ -230,8 +233,8 @@ ostream& operator << (std::ostream &stream, const point& thePoint){
 }
 
 istream& operator >> (istream &stream, point& input){
-    float tmpX, tmpY;
-    int tmpValue;
+    float tmpX = 0, tmpY = 0;
+    int tmpValue = 0;
     char *tmpChar;
     stream >> tmpX >> tmpY >> tmpValue >> tmpChar;
     input.setX(tmpX);
@@ -239,4 +242,8 @@ istream& operator >> (istream &stream, point& input){
     input.setValue(tmpValue);
     input.setName(tmpChar);
     return stream;
+}
+
+void point::print(){
+    cout << "(" << x << ", " << y << ")" << endl;
 }

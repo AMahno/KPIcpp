@@ -4,17 +4,21 @@
 using namespace std;
 
 int main(){
-    cout << "Creating deriative classes." << endl;
+    cout << "Creating classes." << endl;
     ComplexPoint deriative1(4, 5, 1, 3, "F00");
     ComplexPoint deriative2(3, 1, 4, 5, "FBB");
-    FractionPoint deriative3(7, 6, 2, 3, "BAR");
-    FractionPoint deriative4(3, 2, 7, 6, "B0R");
+    FractionPoint deriative3(7, 6, 1, 3, "BAR");
+    FractionPoint deriative4(3, 2, 3, 3, "B0R");
+    point exampleBase(1, 2, 3, "Test");
 
-    cout << "\nUsing new cout stuff:" << endl;
-    cout << deriative1;
-    cout << deriative2;
-    cout << deriative3;
-    cout << deriative4;
+    cout << "\nUsing virtual functions:" << endl;
+    point *pointPtr[5];
+    pointPtr[0] = &deriative1;
+    pointPtr[1] = &deriative2;
+    pointPtr[2] = &deriative3;
+    pointPtr[3] = &deriative4;
+    pointPtr[4] = &exampleBase;
+    for(int i = 0; i<5; i++) pointPtr[i]->print();
 
     cout << "\nComparing fractions: " << endl;
     cout << deriative3.getName() << " Is ";
@@ -36,11 +40,11 @@ int main(){
     deriative1 = deriative1+deriative2;
     cout << deriative1;
 
-    cout << "New cin stuff for fractions: enter x, y, value, name and denominator:" << endl;
+    cout << "\nNew cin stuff for fractions: enter x, y, value, name and denominator:" << endl;
     cin >> deriative3;
     cout << deriative3;
 
-    cout << "New cin stuff for complex numbers: enter x, y, value, name and complex part:" << endl;
+    cout << "\nNew cin stuff for complex numbers: enter x, y, value, name and complex part:" << endl;
     cin >> deriative1;
     cout << deriative1;
     return 0;
