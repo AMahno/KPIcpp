@@ -18,6 +18,7 @@ FractionPoint::FractionPoint(){
 FractionPoint::FractionPoint(float X, float Y, int theValue, int theDenominator, char* theName)
 : point(X, Y, theValue, theName) {
     type = FRACTION;
+	denominator = theDenominator;
 }
 
 //get function

@@ -24,6 +24,5 @@ int main(){
     cout << "Using reloaded function:" << endl;
     deriative2.printData();
 
-
     return 0;
 }

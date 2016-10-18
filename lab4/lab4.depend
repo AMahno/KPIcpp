@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1476811925 source:c:\cppworkspace\lab4\main.cpp
+	<iostream>
+	<cstring>
+	<list>
+	<queue>
+

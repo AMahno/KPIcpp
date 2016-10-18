@@ -13,7 +13,7 @@ float** init(int size);
 float** T(float** a, int size);
 float** getDiffTable(float *a, int size);
 long long int fact(int);
-float* getExpTable(float, float, int);
+float* getCtgTable(float, float, int);
 float Q(float, float, float, int);
 void showDiffTable(float, float, float** a, int size);
 void approximate(float argument);
@@ -45,11 +45,11 @@ void approximate(float x){
     }else{
         flag = false;
     }
-    int size = 8;
-	float h = 1;
-	float first = 0.07;
+    int size = 12;
+	float h = 0.25; //<- REDO
+	float first = 0.5;
 	float *a = new float[size];
-	a = getExpTable(first, h, size);
+	a = getCtgTable(first, h, size);
 	float **y;
 	y = getDiffTable(a, size);
 	showDiffTable(first, h, y, size);
@@ -137,7 +137,7 @@ float Q(float x, float x0, float h, int n)
 	return res;
 }
 
-float* getExpTable(float first, float h, int n)
+float* getCtgTable(float first, float h, int n)
 {
 	float *res = new float[n];
 	float x = first;
