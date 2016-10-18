@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstring>
+#include <string>
 #include <list>
 #include <queue>
 
@@ -7,42 +7,33 @@ using namespace std;
 
 class PrintRequest{
 private:
-    char* name;
-    char* author;
+    string name;
+    string author;
     int amount;
 public:
     int index;
     PrintRequest(){
-        name = NULL;
-        author = NULL;
+        name = "";
+        author = "";
         amount = 0;
     }
 
-    PrintRequest(char* theName, char* theAuthor, int anAmount, int theIndex){
-        try{
-            name = new char[strlen(theName)+1];
-            strcpy(name, theName);
-        }
-        catch(bad_alloc& ba){
-            cerr << "Bad memory allocation for name found: " << ba.what() << endl;
-        }
-        try{
-        author = new char[strlen(theAuthor)+1];
-        strcpy(author, theAuthor);
-        }
-        catch(bad_alloc& ba){
-            cerr << "Bad memory allocation for author found: " << ba.what() << endl;
-        }
+    PrintRequest(string theName, string theAuthor, int anAmount, int theIndex){
+        name = theName;
+        author = theAuthor;
         amount = anAmount;
         index = theIndex;
     }
-    ~PrintRequest(){
-        delete[] name;
-        delete[] author;
+
+    PrintRequest(const PrintRequest &inputRequest){
+        name = inputRequest.getName();
+        author = inputRequest.getAuthor();
+        amount = inputRequest.getAmount();
+        index = inputRequest.index;
     }
 
-    inline char* getName() const {return name;}
-    inline char* getAuthor() const {return author;}
+    inline string getName() const {return name;}
+    inline string getAuthor() const {return author;}
     inline int getAmount() const {return amount;}
 
     template <typename T>
@@ -58,7 +49,7 @@ struct Comparator{
 };
 
 int main(){
-    list<PrintRequest> inputList; //create a list of requests
+    list<PrintRequest> inputList(0); //create a list of requests
     inputList.push_front(PrintRequest("Novel", "Tom", 10, inputList.size()));
     inputList.push_front(PrintRequest("Tale", "Jack", 20, inputList.size()));
     inputList.push_front(PrintRequest("Poem", "Fred", 30, inputList.size()));
@@ -66,6 +57,8 @@ int main(){
     inputList.push_front(PrintRequest("Guide", "Jim", 50, inputList.size()));
 
     priority_queue<PrintRequest, vector<PrintRequest>, Comparator> aQueue;
+    queue<PrintRequest> anotherQueue;
+
     list<PrintRequest>::iterator l_it = inputList.begin(); //convert list into a priority queue
     while(l_it != inputList.end()){
         aQueue.push(*l_it); //compared by index in the list
@@ -79,5 +72,6 @@ int main(){
         cout << endl;
         aQueue.pop();
     }
+
     return 0;
 }
