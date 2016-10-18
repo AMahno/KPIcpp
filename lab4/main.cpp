@@ -3,6 +3,8 @@
 #include <list>
 #include <queue>
 
+#define MAX_AMOUNT 100
+
 using namespace std;
 
 class PrintRequest{
@@ -21,14 +23,26 @@ public:
     PrintRequest(string theName, string theAuthor, int anAmount, int theIndex){
         name = theName;
         author = theAuthor;
-        amount = anAmount;
+        try{
+            if(anAmount > MAX_AMOUNT) throw 1;
+            amount = anAmount;
+        }
+        catch(int error){
+            cerr << "Error 1: amount is too big!" << endl;
+        }
         index = theIndex;
     }
 
     PrintRequest(const PrintRequest &inputRequest){
         name = inputRequest.getName();
         author = inputRequest.getAuthor();
-        amount = inputRequest.getAmount();
+        try{
+            if(inputRequest.getAmount() > MAX_AMOUNT) throw 1;
+            amount = inputRequest.getAmount();
+        }
+        catch(int error){
+            cerr << "Error 1: amount is too big!" << endl;
+        }
         index = inputRequest.index;
     }
 
