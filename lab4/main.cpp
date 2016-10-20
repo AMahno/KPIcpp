@@ -49,12 +49,16 @@ public:
     inline string getName() const {return name;}
     inline string getAuthor() const {return author;}
     inline int getAmount() const {return amount;}
-
-    template <typename T>
-    void printMember(T aMember) const{
-        cout << aMember << endl;
-    }
 };
+
+class PrintMember{
+public:
+    template <typename T>
+    void operator ()(const T input){
+        cout << input << endl;
+    }
+}PrintMember;
+
 
 struct Comparator{
   bool operator()(const PrintRequest& l, const PrintRequest& r){
@@ -65,9 +69,9 @@ struct Comparator{
 template <typename type>
 void print(type& input){
     while(!input.empty()){ //print queue using template function, deleting a queue
-        input.top().printMember(input.top().getName());
-        input.top().printMember(input.top().getAuthor());
-        input.top().printMember(input.top().getAmount());
+        PrintMember(input.top().getName());
+        PrintMember(input.top().getAuthor());
+        PrintMember(input.top().getAmount());
         cout << endl;
         input.pop();
     }
@@ -82,12 +86,10 @@ int main(){
     inputList.push_front(PrintRequest("Guide", "Jim", 50, inputList.size()));
 
     priority_queue<PrintRequest, vector<PrintRequest>, Comparator> aQueue;
-    queue<PrintRequest> anotherQueue;
 
     list<PrintRequest>::iterator l_it = inputList.begin(); //convert list into a priority queue
     while(l_it != inputList.end()){
         aQueue.push(*l_it); //compared by index in the list
-        anotherQueue.push(*l_it);
         l_it++;
     }
 
