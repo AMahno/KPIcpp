@@ -62,6 +62,17 @@ struct Comparator{
   }
 };
 
+template <typename type>
+void print(type& input){
+    while(!input.empty()){ //print queue using template function, deleting a queue
+        input.top().printMember(input.top().getName());
+        input.top().printMember(input.top().getAuthor());
+        input.top().printMember(input.top().getAmount());
+        cout << endl;
+        input.pop();
+    }
+}
+
 int main(){
     list<PrintRequest> inputList(0); //create a list of requests
     inputList.push_front(PrintRequest("Novel", "Tom", 10, inputList.size()));
@@ -76,16 +87,11 @@ int main(){
     list<PrintRequest>::iterator l_it = inputList.begin(); //convert list into a priority queue
     while(l_it != inputList.end()){
         aQueue.push(*l_it); //compared by index in the list
+        anotherQueue.push(*l_it);
         l_it++;
     }
 
-    while(!aQueue.empty()){ //print queue using template function, deleting a queue
-        aQueue.top().printMember(aQueue.top().getName());
-        aQueue.top().printMember(aQueue.top().getAuthor());
-        aQueue.top().printMember(aQueue.top().getAmount());
-        cout << endl;
-        aQueue.pop();
-    }
+    print(aQueue);
 
     return 0;
 }
