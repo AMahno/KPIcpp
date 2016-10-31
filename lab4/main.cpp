@@ -28,7 +28,7 @@ public:
             amount = anAmount;
         }
         catch(int error){
-            cerr << "Error 1: amount is too big!" << endl;
+            cerr << "Error 1: amount is too big in request <<" << theName << ">>" << endl;
         }
         index = theIndex;
     }
@@ -41,7 +41,7 @@ public:
             amount = inputRequest.getAmount();
         }
         catch(int error){
-            cerr << "Error 1: amount is too big!" << endl;
+            cerr << "Error 1: amount is too big in request <<" << inputRequest.getName() << ">>" << endl;
         }
         index = inputRequest.index;
     }
@@ -68,7 +68,7 @@ struct Comparator{
 
 template <typename type>
 void print(type& input){
-    while(!input.empty()){ //print queue using template function, deleting a queue
+    while(!input.empty()){ //print queue using template function, (I don't know why), deleting a queue
         PrintMember(input.top().getName());
         PrintMember(input.top().getAuthor());
         PrintMember(input.top().getAmount());
@@ -81,11 +81,11 @@ int main(){
     list<PrintRequest> inputList(0); //create a list of requests
     inputList.push_front(PrintRequest("Novel", "Tom", 10, inputList.size()));
     inputList.push_front(PrintRequest("Tale", "Jack", 20, inputList.size()));
-    inputList.push_front(PrintRequest("Poem", "Fred", 30, inputList.size()));
+    inputList.push_front(PrintRequest("Poem", "Fred", 300, inputList.size()));
     inputList.push_front(PrintRequest("Story", "Gordon", 40, inputList.size()));
     inputList.push_front(PrintRequest("Guide", "Jim", 50, inputList.size()));
 
-    priority_queue<PrintRequest, vector<PrintRequest>, Comparator> aQueue;
+    priority_queue<PrintRequest, deque<PrintRequest>, Comparator> aQueue;
 
     list<PrintRequest>::iterator l_it = inputList.begin(); //convert list into a priority queue
     while(l_it != inputList.end()){
