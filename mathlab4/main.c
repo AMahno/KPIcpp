@@ -38,7 +38,7 @@ int main(){
     printf("Derivative calculated: %f\n", ownDer);
     printf("Derivative from analytic method: %f\n", realDer);
     printf("Absolute error: %f\n", ownDer-realDer);
-    printf("Relative error: %f%\n", fabs((ownDer-realDer)/realDer));
+    printf("Relative error: %f%\n", 100*fabs((ownDer-realDer)/ownDer));
     return 0;
 }
 
