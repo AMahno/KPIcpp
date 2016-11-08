@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1478623815 source:c:\cppworkspace\mathlab5\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<time.h>
+
