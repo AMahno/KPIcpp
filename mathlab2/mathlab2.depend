@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1474363575 source:c:\cppworkspace\mathlab2\main.cpp
+1474359975 source:c:\cppworkspace\mathlab2\main.cpp
 	<stdio.h>
 	<iostream>
 	<math.h>
@@ -8,7 +8,7 @@
 	<GL/glut.h>
 	<conio.h>
 
-1474301397 c:\cppworkspace\mathlab2\bernoulli_b.h
+1474297797 c:\cppworkspace\mathlab2\bernoulli_b.h
 	<math.h>
 	<float.h>
 

@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1479158477 source:c:\cppworkspace\lab5\serial.cpp
+	"SerialClass.h"
+
+1479158854 c:\cppworkspace\lab5\serialclass.h
+	<windows.h>
+	<stdio.h>
+	<stdlib.h>
+
+1479160560 source:c:\cppworkspace\lab5\main.cpp
+	<stdio.h>
+	<iostream>
+	<tchar.h>
+	"SerialClass.h"
+	<string>
+	<pthread.h>
+	<GL/glut.h>
+
