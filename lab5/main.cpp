@@ -38,19 +38,23 @@ public:
             printf("Bytes read: (0 means no data available) %i\n",readResult);
             incomingData[readResult] = 0;
             printf("%s",incomingData);
+            int channel = 0;
+            int number = 0;
             char * pch = strtok(incomingData, "!");
             while(pch != NULL){
                 if(!second){
                     cout << "1: " << pch << endl;
+                    channel = atoi(pch);
                     pch = strtok(NULL, "\n");
                     second = true;
                 }else{
                     cout << "2: " << pch << endl;
+                    number = atoi(pch);
                     pch = strtok(NULL, "!");
                     second = false;
                 }
             }
-
+            spectrum[channel]+=number;
             Sleep(250);
         }
         return(0);
