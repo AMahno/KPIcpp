@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1479399265 source:c:\cppworkspace\lab5\serial.cpp
+1479415528 source:c:\cppworkspace\lab5\serial.cpp
 	"SerialClass.h"
 
 1479158854 c:\cppworkspace\lab5\serialclass.h
@@ -7,7 +7,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1479402523 source:c:\cppworkspace\lab5\main.cpp
+1479417736 source:c:\cppworkspace\lab5\main.cpp
 	<stdio.h>
 	<iostream>
 	<tchar.h>

@@ -26,7 +26,7 @@ Serial::Serial(char *portName)
         }
         else
         {
-            printf("ERROR!!!");
+            printf("ERROR!\n");
         }
     }
     else
