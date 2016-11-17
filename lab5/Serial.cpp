@@ -43,7 +43,7 @@ Serial::Serial(char *portName)
         else
         {
             //Define serial connection parameters for the arduino board
-            dcbSerialParams.BaudRate=CBR_9600;
+            dcbSerialParams.BaudRate=CBR_250000;
             dcbSerialParams.ByteSize=8;
             dcbSerialParams.StopBits=ONESTOPBIT;
             dcbSerialParams.Parity=NOPARITY;
@@ -60,7 +60,7 @@ Serial::Serial(char *portName)
              {
                  //If everything went fine we're connected
                  this->connected = true;
-                 //Flush any remaining characters in the buffers 
+                 //Flush any remaining characters in the buffers
                  PurgeComm(this->hSerial, PURGE_RXCLEAR | PURGE_TXCLEAR);
                  //We wait 2s as the arduino board will be reseting
                  Sleep(ARDUINO_WAIT_TIME);

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1479158477 source:c:\cppworkspace\lab5\serial.cpp
+1479399265 source:c:\cppworkspace\lab5\serial.cpp
 	"SerialClass.h"
 
 1479158854 c:\cppworkspace\lab5\serialclass.h
@@ -7,12 +7,54 @@
 	<stdio.h>
 	<stdlib.h>
 
-1479160560 source:c:\cppworkspace\lab5\main.cpp
+1479401031 source:c:\cppworkspace\lab5\main.cpp
 	<stdio.h>
 	<iostream>
 	<tchar.h>
 	"SerialClass.h"
 	<string>
+	<vector>
 	<pthread.h>
 	<GL/glut.h>
+
+1479313497 c:\cppworkspace\lab5\pui\includes\gl\glut.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1479313497 c:\cppworkspace\lab5\pui\includes\pu.h
+	"fnt.h"
+	"ulRTTI.h"
+
+1479313497 c:\cppworkspace\lab5\pui\includes\fnt.h
+	"sg.h"
+	<OpenGL/gl.h>
+	<GL/gl.h>
+
+1479313497 c:\cppworkspace\lab5\pui\includes\sg.h
+	"ul.h"
+
+1479313497 c:\cppworkspace\lab5\pui\includes\ul.h
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<string.h>
+	<ctype.h>
+	<assert.h>
+	<windows.h>
+	<unistd.h>
+	<be/kernel/image.h>
+	<CodeFragments.h>
+	<unistd.h>
+	<unistd.h>
+	<dlfcn.h>
+	<assert.h>
+	<limits.h>
+	<math.h>
+	<sys/param.h>
+	<float.h>
+
+1479313497 c:\cppworkspace\lab5\pui\includes\ulrtti.h
+	<string.h>
+	"ul.h"
 
