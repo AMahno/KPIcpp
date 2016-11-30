@@ -10,7 +10,7 @@ class Spectrum : public QObject {
 public:
     Spectrum();
     long getChannel(int);
-    void setChannel(int, long);
+    void setChannel(int, double);
     void clearSpectrum();
     QVector<double> getStorage();
 public slots:

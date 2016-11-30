@@ -2,22 +2,31 @@
 #include "mainwindow.h"
 
 Spectrum::Spectrum(){
-    storage.reserve(1000);
+    storage.resize(1000);
+    storage.fill(0);
 }
 
-void Spectrum::setChannel(int channel, long value){
+void Spectrum::setChannel(int channel, double value){
     storage[channel] = value;
 }
 
 void Spectrum::recieve(){
     QSerialPort* serial = static_cast<QSerialPort*>(QObject::sender());
-    QByteArray data = serial->readAll();
-    QString dataAsString = QTextCodec::codecForMib(1015)->toUnicode(data);
-    QStringList dataList = dataAsString.split('!');
-    int x = dataList.at(0).toInt();
-    int y = dataList.at(1).toInt();
-    if(x <= 1000){
-        storage[x] = y;
+    QString data;
+    if(serial->canReadLine()){
+        data = serial->readLine();
+        QStringList dataList = data.split('!');
+        if(dataList.size() == 2){
+            QString x = dataList.at(0);
+            double X = x.toDouble();
+            QString y = dataList.at(1);
+            y.remove('\n');
+            y.remove('\r');
+            double Y = y.toDouble();
+            if(X < 1000) storage[X] += Y;
+        }
+        //QString y = dataList.at(1);
+        //
     }
 }
 

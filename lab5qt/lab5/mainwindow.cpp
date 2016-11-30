@@ -81,14 +81,14 @@ MainWindow::MainWindow(QWidget *parent) :
     bars = new QCPBars(wGraphic->xAxis, wGraphic->yAxis);
 
     //fill x vector
-    QVector<double>::iterator it;
-    for(it = coords.begin(); it != coords.end(); it++) *it = it-coords.begin();
+    for(int i = 0; i < 1000; i++) coords[i] = i;
 
     //add widgets to UI
     ui->verticalLayout->addWidget(wGraphic);
     ui->verticalLayout->addWidget(console);
     console->setFixedHeight(100);
 
+    /*
     QVector<double> x1(5) , y1(5);
     x1[0] = 100;
     y1[0] = 250;
@@ -96,12 +96,13 @@ MainWindow::MainWindow(QWidget *parent) :
     y1[2] = 900;
     x1[3] = 568;
     y1[3] = 822;
+*/
 
-    bars->setData(x1, y1);
+    //bars->setData(coords, spectrum->getStorage());
 
     //set chart range
     wGraphic->xAxis->setRange(0,1000);
-    wGraphic->yAxis->setRange(0,1000);
+    wGraphic->yAxis->setRange(0,10000);
 
     //set chart style
     bars->setWidthType(QCPBars::wtPlotCoords);
@@ -194,10 +195,13 @@ void MainWindow::writeData(const QByteArray &data){
 
 
 void MainWindow::readData(){
-    QByteArray data = serial->readAll();
-    bars->setData(spectrum->getStorage(), coords);
-    wGraphic->replot();
+    console->putData("Bytes at port: ");
+    QString data = QString::number(serial->bytesAvailable());
     console->putData(data);
+    console->putData("\n");
+
+    bars->setData(coords, spectrum->getStorage());
+    wGraphic->replot();
 }
 
 
@@ -214,6 +218,7 @@ void MainWindow::initActionsConnections(){
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionConfigure, &QAction::triggered, settings, &MainWindow::show);
     connect(ui->actionClear, &QAction::triggered, console, &Console::clear);
+    connect(ui->actionClear, &QAction::triggered, spectrum, &Spectrum::clearSpectrum);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
     //connect(ui->actionStart_accumulation, &QAction::triggered, this, &MainWindow::test);
@@ -224,5 +229,4 @@ void MainWindow::showStatusMessage(const QString &message){
 }
 
 void MainWindow::on_actionClear_triggered(){
-
 }
