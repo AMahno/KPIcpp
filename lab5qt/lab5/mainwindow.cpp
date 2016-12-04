@@ -55,6 +55,7 @@
 #include "settingsdialog.h"
 #include "qcustomplot.h"
 #include "spectrum.h"
+#include <math.h>
 
 #include <QMessageBox>
 #include <QLabel>
@@ -69,12 +70,24 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //timer, contorls and progress bar setup
+    timer = new QTimer;
+    timer->setInterval(1000);
+    ui->lineEdit->setText("1000");
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(1000);
+    ui->startbutton->setEnabled(false);
+    ui->stopbutton->setEnabled(false);
+
+    autoscale = false;
+
     //create console instance
     console = new Console;
     console->setEnabled(false);
 
     //create spectrum storage instance
     spectrum = new Spectrum;
+    spectrum->accumulation = false;
 
     //create bar chart instance
     wGraphic = new QCustomPlot();
@@ -88,18 +101,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayout->addWidget(console);
     console->setFixedHeight(100);
 
-    /*
-    QVector<double> x1(5) , y1(5);
-    x1[0] = 100;
-    y1[0] = 250;
-    x1[2] = 512;
-    y1[2] = 900;
-    x1[3] = 568;
-    y1[3] = 822;
-*/
-
-    //bars->setData(coords, spectrum->getStorage());
-
     //set chart range
     wGraphic->xAxis->setRange(0,1000);
     wGraphic->yAxis->setRange(0,10000);
@@ -111,6 +112,18 @@ MainWindow::MainWindow(QWidget *parent) :
     barBrush.setColor(Qt::blue);
     barBrush.setStyle(Qt::SolidPattern);
     bars->setBrush(barBrush);
+
+    xRange = 10000;
+
+    QVector<double> x(2) , y(2);
+            x[0] = 0;
+            y[0] = 0;
+            x[1] = 0;
+            y[1] = xRange;
+    verticalLine = new QCPCurve(wGraphic->xAxis, wGraphic->yAxis);
+    wGraphic->addPlottable(verticalLine);
+    //verticalLine->setName("Vertical");
+    verticalLine->setData(x, y);
 
     wGraphic->replot();
 
@@ -129,13 +142,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(status);
 
     initActionsConnections();
-
-    connect(serial, static_cast<void (QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
-            this, &MainWindow::handleError);
-
-    connect(serial, &QSerialPort::readyRead, this, &MainWindow::readData);
-    connect(console, &Console::getData, this, &MainWindow::writeData);
-    connect(serial, &QSerialPort::readyRead, spectrum, &Spectrum::recieve);
 }
 
 
@@ -162,6 +168,7 @@ void MainWindow::openSerialPort(){
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
                           .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
                           .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
+        ui->startbutton->setEnabled(true);
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
 
@@ -179,13 +186,15 @@ void MainWindow::closeSerialPort(){
     ui->actionDisconnect->setEnabled(false);
     ui->actionConfigure->setEnabled(true);
     showStatusMessage(tr("Disconnected"));
+    on_stopbutton_clicked();
+    ui->startbutton->setEnabled(false);
 }
 
 void MainWindow::about(){
-    QMessageBox::about(this, tr("About Simple Terminal"),
-                       tr("The <b>Simple Terminal</b> example demonstrates how to "
-                          "use the Qt Serial Port module in modern GUI applications "
-                          "using Qt, with a menu bar, toolbars, and a status bar."));
+    QMessageBox::about(this, tr("Spectroscope about"),
+                       tr("The <b>Spectroscope app</b> is a deeply modified Qt's "
+                          "Terminal example "
+                          "done by Mahnyov Aleksander, NTUU KPI."));
 }
 
 
@@ -200,7 +209,12 @@ void MainWindow::readData(){
     console->putData(data);
     console->putData("\n");
 
+    if(autoscale){
+        wGraphic->yAxis->setRangeUpper(spectrum->getMax()*1.1);
+    }
     bars->setData(coords, spectrum->getStorage());
+    updateLine();
+    updateChannelData();
     wGraphic->replot();
 }
 
@@ -213,15 +227,21 @@ void MainWindow::handleError(QSerialPort::SerialPortError error){
 }
 
 void MainWindow::initActionsConnections(){
+    connect(serial, static_cast<void (QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
+            this, &MainWindow::handleError);
+    connect(timer, &QTimer::timeout, this, &MainWindow::onTimer);
+    connect(serial, &QSerialPort::readyRead, this, &MainWindow::readData);
+    connect(console, &Console::getData, this, &MainWindow::writeData);
+    connect(serial, &QSerialPort::readyRead, spectrum, &Spectrum::recieve);
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::openSerialPort);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionConfigure, &QAction::triggered, settings, &MainWindow::show);
     connect(ui->actionClear, &QAction::triggered, console, &Console::clear);
-    connect(ui->actionClear, &QAction::triggered, spectrum, &Spectrum::clearSpectrum);
+    connect(ui->actionClear, &QAction::triggered, this, &MainWindow::clearChart);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
-    //connect(ui->actionStart_accumulation, &QAction::triggered, this, &MainWindow::test);
+    connect(wGraphic, &QCustomPlot::mousePress, this, &MainWindow::slotMousePress);
 }
 
 void MainWindow::showStatusMessage(const QString &message){
@@ -229,4 +249,99 @@ void MainWindow::showStatusMessage(const QString &message){
 }
 
 void MainWindow::on_actionClear_triggered(){
+
+}
+
+void MainWindow::clearChart(){
+    spectrum->clearSpectrum();
+    bars->setData(coords, spectrum->getStorage());
+    wGraphic->replot();
+    ui->progressBar->setValue(0);
+}
+
+void MainWindow::onTimer(){
+    int timeout = ui->lineEdit->text().toInt();
+    if(ui->progressBar->value() >= timeout){
+        timer->stop();
+        ui->progressBar->setValue(0);
+        spectrum->accumulation = false;
+    }
+    else ui->progressBar->setValue(ui->progressBar->value()+1);
+}
+
+void MainWindow::on_startbutton_clicked(){
+    ui->progressBar->setMaximum(ui->lineEdit->text().toInt());
+    timer->start();
+    spectrum->accumulation = true;
+    ui->startbutton->setEnabled(false);
+    ui->stopbutton->setEnabled(true);
+}
+
+void MainWindow::on_stopbutton_clicked(){
+    timer->stop();
+    spectrum->accumulation = false;
+    ui->stopbutton->setEnabled(false);
+    ui->startbutton->setEnabled(true);
+}
+
+void MainWindow::on_lineEdit_returnPressed(){
+    ui->progressBar->setMaximum(ui->lineEdit->text().toInt());
+}
+
+void MainWindow::on_actionScaleUp_triggered(){
+    xRange*=2;
+    wGraphic->yAxis->setRangeUpper(xRange);
+    updateLine();
+    wGraphic->replot();
+}
+
+void MainWindow::on_actionScaleDown_triggered(){
+    xRange/=2;
+    wGraphic->yAxis->setRangeUpper(xRange);
+    updateLine();
+    wGraphic->replot();
+}
+
+void MainWindow::on_actionAutoscale_triggered(){
+    if(autoscale){
+        autoscale = false;
+        xRange = spectrum->getMax()*1.1;
+    }else{
+        autoscale = true;
+    }
+}
+
+void MainWindow::slotMousePress(QMouseEvent *event){
+    linePos = wGraphic->xAxis->pixelToCoord(event->pos().x());
+    linePos = floor(linePos);
+    updateLine();
+    wGraphic->replot();
+}
+
+void MainWindow::updateLine(){
+    QVector<double> x(2), y(2);
+    x[0] = linePos;
+    y[0] = 0;
+    x[1] = linePos;
+    y[1] = xRange;
+    verticalLine->setData(x, y);
+    updateChannelData();
+}
+
+void MainWindow::on_moveLineLeft_triggered(){
+    linePos--;
+    updateLine();
+    wGraphic->replot();
+}
+
+void MainWindow::on_moveLineRight_triggered(){
+    linePos++;
+    updateLine();
+    wGraphic->replot();
+}
+
+void MainWindow::updateChannelData(){
+    ui->channelData->setText("Pulses at channel "
+        + QString::number(linePos) + ": "
+        + QString::number(spectrum->getChannel(linePos)));
 }
