@@ -115,11 +115,15 @@ private slots:
 
     void on_moveLineRight_triggered();
 
+    void on_moveLineLeft_g_triggered();
+
+    void on_moveLineRight_g_triggered();
+
 private:
     void initActionsConnections();
     void clearChart();
     void onTimer();
-    void updateLine();
+    void updateLines();
     void updateChannelData();
 
 private:
@@ -131,13 +135,15 @@ private:
     SettingsDialog *settings;
     QSerialPort *serial;
     QCustomPlot *wGraphic;
-    QCPCurve *verticalLine;
+    QCPCurve *leftLine;
+    QCPCurve *rightLine;
     QCPBars *bars;
     Spectrum *spectrum;
     QTimer *timer;
 
     double xRange;
-    double linePos;
+    double leftLinePos;
+    double rightLinePos;
     bool autoscale;
 };
 

@@ -120,10 +120,14 @@ MainWindow::MainWindow(QWidget *parent) :
             y[0] = 0;
             x[1] = 0;
             y[1] = xRange;
-    verticalLine = new QCPCurve(wGraphic->xAxis, wGraphic->yAxis);
-    wGraphic->addPlottable(verticalLine);
-    //verticalLine->setName("Vertical");
-    verticalLine->setData(x, y);
+    leftLine = new QCPCurve(wGraphic->xAxis, wGraphic->yAxis);
+    rightLine = new QCPCurve(wGraphic->xAxis, wGraphic->yAxis);
+    wGraphic->addPlottable(leftLine);
+    wGraphic->addPlottable(rightLine);
+    leftLine->setData(x, y);
+    rightLine->setData(x, y);
+    leftLine->setPen(QPen(Qt::red));
+    rightLine->setPen(QPen(Qt::green));
 
     wGraphic->replot();
 
@@ -213,7 +217,7 @@ void MainWindow::readData(){
         wGraphic->yAxis->setRangeUpper(spectrum->getMax()*1.1);
     }
     bars->setData(coords, spectrum->getStorage());
-    updateLine();
+    updateLines();
     updateChannelData();
     wGraphic->replot();
 }
@@ -291,14 +295,14 @@ void MainWindow::on_lineEdit_returnPressed(){
 void MainWindow::on_actionScaleUp_triggered(){
     xRange*=2;
     wGraphic->yAxis->setRangeUpper(xRange);
-    updateLine();
+    updateLines();
     wGraphic->replot();
 }
 
 void MainWindow::on_actionScaleDown_triggered(){
     xRange/=2;
     wGraphic->yAxis->setRangeUpper(xRange);
-    updateLine();
+    updateLines();
     wGraphic->replot();
 }
 
@@ -312,36 +316,52 @@ void MainWindow::on_actionAutoscale_triggered(){
 }
 
 void MainWindow::slotMousePress(QMouseEvent *event){
-    linePos = wGraphic->xAxis->pixelToCoord(event->pos().x());
-    linePos = floor(linePos);
-    updateLine();
+    double clickPos = wGraphic->xAxis->pixelToCoord(event->pos().x());
+    if(event->button() == Qt::LeftButton) leftLinePos = floor(clickPos);
+    else if(event->button() == Qt::RightButton) rightLinePos = floor(clickPos);
+    updateLines();
     wGraphic->replot();
 }
 
-void MainWindow::updateLine(){
+void MainWindow::updateLines(){
     QVector<double> x(2), y(2);
-    x[0] = linePos;
+    x[0] = leftLinePos;
     y[0] = 0;
-    x[1] = linePos;
+    x[1] = leftLinePos;
     y[1] = xRange;
-    verticalLine->setData(x, y);
+    leftLine->setData(x, y);
+    x[0] = rightLinePos;
+    x[1] = rightLinePos;
+    rightLine->setData(x, y);
     updateChannelData();
 }
 
 void MainWindow::on_moveLineLeft_triggered(){
-    linePos--;
-    updateLine();
+    leftLinePos--;
+    updateLines();
     wGraphic->replot();
 }
 
 void MainWindow::on_moveLineRight_triggered(){
-    linePos++;
-    updateLine();
+    leftLinePos++;
+    updateLines();
     wGraphic->replot();
 }
 
 void MainWindow::updateChannelData(){
     ui->channelData->setText("Pulses at channel "
-        + QString::number(linePos) + ": "
-        + QString::number(spectrum->getChannel(linePos)));
+        + QString::number(leftLinePos) + ": "
+        + QString::number(spectrum->getChannel(leftLinePos)));
+}
+
+void MainWindow::on_moveLineLeft_g_triggered(){
+    rightLinePos--;
+    updateLines();
+    wGraphic->replot();
+}
+
+void MainWindow::on_moveLineRight_g_triggered(){
+    rightLinePos++;
+    updateLines();
+    wGraphic->replot();
 }

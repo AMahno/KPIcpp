@@ -135,6 +135,9 @@
    <addaction name="separator"/>
    <addaction name="moveLineLeft"/>
    <addaction name="moveLineRight"/>
+   <addaction name="separator"/>
+   <addaction name="moveLineLeft_g"/>
+   <addaction name="moveLineRight_g"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAbout">
@@ -270,7 +273,7 @@
    </property>
    <property name="icon">
     <iconset resource="terminal.qrc">
-     <normaloff>:/images/left.png</normaloff>:/images/left.png</iconset>
+     <normaloff>:/images/leftRed.png</normaloff>:/images/leftRed.png</iconset>
    </property>
    <property name="text">
     <string>moveLineLeft</string>
@@ -282,7 +285,7 @@
   <action name="moveLineRight">
    <property name="icon">
     <iconset resource="terminal.qrc">
-     <normaloff>:/images/right.png</normaloff>:/images/right.png</iconset>
+     <normaloff>:/images/rightRed.png</normaloff>:/images/rightRed.png</iconset>
    </property>
    <property name="text">
     <string>moveLineRight</string>
@@ -292,6 +295,48 @@
    </property>
    <property name="shortcut">
     <string>Right</string>
+   </property>
+  </action>
+  <action name="moveLineLeft_g">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="terminal.qrc">
+     <normaloff>:/images/leftGreen.png</normaloff>:/images/leftGreen.png</iconset>
+   </property>
+   <property name="text">
+    <string>moveLineLeft</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="moveLineRight_g">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="terminal.qrc">
+     <normaloff>:/images/rightGreen.png</normaloff>:/images/rightGreen.png</iconset>
+   </property>
+   <property name="text">
+    <string>moveLineLeft</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
    </property>
   </action>
  </widget>
