@@ -314,9 +314,6 @@
    <property name="text">
     <string>moveLineLeft</string>
    </property>
-   <property name="shortcut">
-    <string>Left</string>
-   </property>
   </action>
   <action name="moveLineRight_g">
    <property name="checkable">
@@ -334,9 +331,6 @@
    </property>
    <property name="text">
     <string>moveLineLeft</string>
-   </property>
-   <property name="shortcut">
-    <string>Left</string>
    </property>
   </action>
  </widget>

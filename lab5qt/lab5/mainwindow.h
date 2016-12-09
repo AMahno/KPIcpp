@@ -94,29 +94,17 @@ private slots:
     void handleError(QSerialPort::SerialPortError error);
     void slotMousePress(QMouseEvent *event);
     void on_actionClear_triggered();
-
     void on_pushButton_3_clicked();
-
     void on_startbutton_clicked();
-
     void on_stopbutton_clicked();
-
     void on_resetbutton_clicked();
-
     void on_lineEdit_returnPressed();
-
     void on_actionScaleUp_triggered();
-
     void on_actionScaleDown_triggered();
-
     void on_actionAutoscale_triggered();
-
     void on_moveLineLeft_triggered();
-
     void on_moveLineRight_triggered();
-
     void on_moveLineLeft_g_triggered();
-
     void on_moveLineRight_g_triggered();
 
 private:

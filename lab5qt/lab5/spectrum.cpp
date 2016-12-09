@@ -13,7 +13,7 @@ void Spectrum::setChannel(int channel, double value){
 void Spectrum::recieve(){
     QSerialPort* serial = static_cast<QSerialPort*>(QObject::sender());
     QString data;
-    while(serial->canReadLine()){
+    while(serial->canReadLine()){ //yup, this is parser. TODO: create error handlers
         data = serial->readLine();
         if(accumulation){
             QStringList dataList = data.split('!');
@@ -27,8 +27,6 @@ void Spectrum::recieve(){
                 if(X < 1000) storage[X] += Y;
             }
         }
-        //QString y = dataList.at(1);
-        //
     }
 }
 

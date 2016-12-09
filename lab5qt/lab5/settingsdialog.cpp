@@ -51,6 +51,7 @@
 
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include <qcustomplot.h>
 
 #include <QtSerialPort/QSerialPortInfo>
 #include <QIntValidator>
@@ -66,6 +67,21 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    calibPlot = new QCustomPlot();
+    calibBars = new QCPCurve(calibPlot->xAxis, calibPlot->yAxis);
+    ui->plot_place->addWidget(calibPlot);
+    calibPlot->setMinimumHeight(200);
+
+    table = new QTableWidget(3, 3, this);
+    ui->verticalLayout->addWidget(table);
+    table->setMinimumHeight(200);
+    table->setMinimumWidth(100);
+    for(int row=0; row!=table->rowCount(); ++row){
+        for(int column=0; column!=table->columnCount(); ++column) {
+            QTableWidgetItem *newItem = new QTableWidgetItem(tr("%1").arg((row+1)*(column+1)));
+            table->setItem(row, column, newItem);
+        }
+    }
     intValidator = new QIntValidator(0, 4000000, this);
 
     ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
@@ -78,6 +94,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             this, &SettingsDialog::checkCustomBaudRatePolicy);
     connect(ui->serialPortInfoListBox,  static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &SettingsDialog::checkCustomDevicePathPolicy);
+    connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SLOT(onDataChanged(const QModelIndex&, const QModelIndex&)));
 
     fillPortsParameters();
     fillPortsInfo();
@@ -219,5 +237,9 @@ void SettingsDialog::updateSettings()
                 ui->flowControlBox->itemData(ui->flowControlBox->currentIndex()).toInt());
     currentSettings.stringFlowControl = ui->flowControlBox->currentText();
 
-    currentSettings.localEchoEnabled = ui->localEchoCheckBox->isChecked();
+    //currentSettings.localEchoEnabled = ui->localEchoCheckBox->isChecked();
+}
+
+void SettingsDialog::onDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight){
+    qDebug() << topLeft.row() << " " << topLeft.column();
 }
