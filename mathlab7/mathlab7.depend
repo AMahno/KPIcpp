@@ -1,0 +1,121 @@
+# depslib dependency file v1.0
+1481577314 source:c:\cppworkspace\mathlab7\main.cpp
+	"fparser.hh"
+	<iostream>
+	<string>
+
+1481575900 c:\cppworkspace\mathlab7\fparser.hh
+	<string>
+	<vector>
+	<iostream>
+	<complex>
+
+1481575900 source:c:\cppworkspace\mathlab7\fparser.cc
+	"fpconfig.hh"
+	"fparser.hh"
+	<set>
+	<cstdlib>
+	<cstring>
+	<cctype>
+	<cmath>
+	<cassert>
+	<limits>
+	"extrasrc/fptypes.hh"
+	"extrasrc/fpaux.hh"
+	"extrasrc/fp_identifier_parser.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	<iomanip>
+	<sstream>
+
+1481575900 c:\cppworkspace\mathlab7\fpconfig.hh
+
+1481575900 c:\cppworkspace\mathlab7\extrasrc\fptypes.hh
+	"../fpconfig.hh"
+	<cstring>
+	<map>
+	<vector>
+
+1481575900 c:\cppworkspace\mathlab7\extrasrc\fpaux.hh
+	"fptypes.hh"
+	<cmath>
+	"mpfr/MpfrFloat.hh"
+	"mpfr/GmpInt.hh"
+	<complex>
+
+1481575900 c:\cppworkspace\mathlab7\\mpfr\mpfrfloat.hh
+	<iostream>
+
+1481575900 c:\cppworkspace\mathlab7\\mpfr\gmpint.hh
+	<iostream>
+
+1481575900 c:\cppworkspace\mathlab7\extrasrc\fp_identifier_parser.inc
+
+1481575900 c:\cppworkspace\mathlab7\extrasrc\fp_opcode_add.inc
+
+1481575900 source:c:\cppworkspace\mathlab7\fpoptimizer.cc
+	"fpconfig.hh"
+	"fparser.hh"
+	"extrasrc/fptypes.hh"
+	"extrasrc/fpaux.hh"
+	<stdint.h>
+	<utility>
+	<stdint.h>
+	<vector>
+	<utility>
+	<iostream>
+	<vector>
+	<utility>
+	<iostream>
+	<string>
+	<string>
+	<sstream>
+	<assert.h>
+	<iostream>
+	<vector>
+	<utility>
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	"extrasrc/fp_opcode_add.inc"
+	<vector>
+	<map>
+	<algorithm>
+	<limits>
+	<list>
+	<algorithm>
+	<sstream>
+	<string>
+	<map>
+	<set>
+	<iostream>
+	<cctype>
+	<algorithm>
+	<stdio.h>
+	<algorithm>
+	<map>
+	<sstream>
+	<algorithm>
+	<assert.h>
+	<cstring>
+	<cmath>
+	<memory>
+	<algorithm>
+	<assert.h>
+	<sstream>
+	<cstring>
+	<list>
+	<algorithm>
+	<cmath>
+	<list>
+	<cassert>
+	<cmath>
+	<cassert>
+	<algorithm>
+	<assert.h>
+	<cstdio>
+

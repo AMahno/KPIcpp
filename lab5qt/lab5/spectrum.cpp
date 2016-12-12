@@ -6,10 +6,6 @@ Spectrum::Spectrum(){
     storage.fill(0);
 }
 
-void Spectrum::setChannel(int channel, double value){
-    storage[channel] = value;
-}
-
 void Spectrum::recieve(){
     QSerialPort* serial = static_cast<QSerialPort*>(QObject::sender());
     QString data;
@@ -30,18 +26,40 @@ void Spectrum::recieve(){
     }
 }
 
-QVector<double> Spectrum::getStorage(){
-    return storage;
-}
-
-void Spectrum::clearSpectrum(){
-    storage.fill(0);
-}
-
 double Spectrum::getMax(){
     return *std::max_element(storage.begin(), storage.end());
 }
 
-double Spectrum::getChannel(int channel){
+Calibration::Calibration(){
+    storage.resize(1000);
+    storage.fill(0);
+}
+
+void Calibration::addPoint(int x, double y){
+    point tmpPoint;
+    tmpPoint.x = x;
+    tmpPoint.y = y;
+    points.push_back(tmpPoint);
+}
+
+GenSpectrum::GenSpectrum(){
+    storage.resize(1000);
+    storage.fill(0);
+}
+
+void GenSpectrum::setChannel(int channel, double value){
+    storage[channel] = value;
+}
+
+QVector<double> GenSpectrum::getStorage(){
+    return storage;
+}
+
+void GenSpectrum::clearSpectrum(){
+    storage.fill(0);
+}
+
+double GenSpectrum::getChannel(int channel){
     return storage[channel];
 }
+

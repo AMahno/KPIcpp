@@ -4,21 +4,43 @@
 #include <QObject>
 #include <QVector>
 
+struct point{
+    double x;
+    double y;
+};
 
-class Spectrum : public QObject {
+class GenSpectrum : public QObject {
     Q_OBJECT
+protected:
+    QVector<double> storage;
 public:
-    Spectrum();
+    GenSpectrum();
     double getChannel(int);
     void setChannel(int, double);
     void clearSpectrum();
-    double getMax();
     QVector<double> getStorage();
+};
+
+class Spectrum : public GenSpectrum {
+    Q_OBJECT
+public:
+    Spectrum();
+    double getMax();
     bool accumulation;
 public slots:
     void recieve();
 private:
     QVector<double> storage;
+};
+
+class Calibration : public GenSpectrum {
+    Q_OBJECT
+public:
+    Calibration();
+    void addPoint(int, double);
+private:
+    QVector<point> points;
+    void interpolate();
 };
 
 #endif // SPECTRUM_H
