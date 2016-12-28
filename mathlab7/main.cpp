@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 int main(){
     double eps = 0.001;
     FunctionParser fp;
@@ -32,7 +33,6 @@ int main(){
 		cout << "x: " << x << endl;
 		variables[0] = x;
 	} while (fabs(x-prev) > eps);
-
     cout << "\nResult: " << x << endl;
 
     return 0;

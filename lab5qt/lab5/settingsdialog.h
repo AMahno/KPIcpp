@@ -54,7 +54,9 @@
 
 #include <QDialog>
 #include <QtSerialPort/QSerialPort>
+#include <QVector>
 #include "qcustomplot.h"
+#include "spectrum.h"
 
 QT_USE_NAMESPACE
 
@@ -85,6 +87,7 @@ public:
         QString stringStopBits;
         QSerialPort::FlowControl flowControl;
         QString stringFlowControl;
+        Calibration *curCalibration;
         //bool localEchoEnabled;
     };
 
@@ -93,17 +96,26 @@ public:
 
     Settings settings() const;
 
+public slots:
+    void changedByUser();
+
 private slots:
     void showPortInfo(int idx);
     void apply();
     void checkCustomBaudRatePolicy(int idx);
     void checkCustomDevicePathPolicy(int idx);
     void onDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight);
+    void on_minusButton_clicked();
+    void on_plusButton_clicked();
 
 private:
     void fillPortsParameters();
     void fillPortsInfo();
     void updateSettings();
+    void loadSettings();
+    void saveSettings();
+    void updateTable();
+    void updateGraph();
 
 private:
     Ui::SettingsDialog *ui;
@@ -112,7 +124,11 @@ private:
     QCustomPlot *calibPlot;
     QCPCurve* calibBars;
     QTableWidget* table;
-
+    QString m_sSettingsFile;
+    Calibration *calibration;
+    bool loaded;
+    QVector<double> xArray;
+    QVector<double> yArray;
 };
 
 #endif // SETTINGSDIALOG_H

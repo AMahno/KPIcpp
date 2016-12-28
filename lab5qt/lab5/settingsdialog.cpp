@@ -56,6 +56,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include <QIntValidator>
 #include <QLineEdit>
+#include <QSettings>
 
 QT_USE_NAMESPACE
 
@@ -66,22 +67,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
+    m_sSettingsFile = QApplication::applicationDirPath().left(1) + ":/settings.ini";
+    //m_sSettingsFile = "C:/settings.ini";
 
+    calibration = new Calibration;
+    currentSettings.curCalibration = calibration;
+/*
+    for(int i = 0; i<5; i++){
+        calibration->addPoint(i*100, i*1.5);
+    }
+*/
     calibPlot = new QCustomPlot();
     calibBars = new QCPCurve(calibPlot->xAxis, calibPlot->yAxis);
     ui->plot_place->addWidget(calibPlot);
     calibPlot->setMinimumHeight(200);
+    calibPlot->xAxis->setRange(0, 1000);
+    calibPlot->yAxis->setRange(0, 5);
+    calibPlot->addGraph(calibPlot->xAxis, calibPlot->yAxis);
 
-    table = new QTableWidget(3, 3, this);
+    table = new QTableWidget(0, 2, this);
     ui->verticalLayout->addWidget(table);
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->setMinimumHeight(200);
     table->setMinimumWidth(100);
-    for(int row=0; row!=table->rowCount(); ++row){
-        for(int column=0; column!=table->columnCount(); ++column) {
-            QTableWidgetItem *newItem = new QTableWidgetItem(tr("%1").arg((row+1)*(column+1)));
-            table->setItem(row, column, newItem);
-        }
-    }
+
     intValidator = new QIntValidator(0, 4000000, this);
 
     ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
@@ -94,13 +103,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
             this, &SettingsDialog::checkCustomBaudRatePolicy);
     connect(ui->serialPortInfoListBox,  static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &SettingsDialog::checkCustomDevicePathPolicy);
-    connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-            this, SLOT(onDataChanged(const QModelIndex&, const QModelIndex&)));
 
     fillPortsParameters();
     fillPortsInfo();
-
+    loadSettings();
     updateSettings();
+    updateGraph();
+    connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SLOT(onDataChanged(const QModelIndex&, const QModelIndex&)));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -129,15 +139,15 @@ void SettingsDialog::showPortInfo(int idx)
 
 void SettingsDialog::apply()
 {
+    saveSettings();
     updateSettings();
     hide();
 }
 
-void SettingsDialog::checkCustomBaudRatePolicy(int idx)
-{
+void SettingsDialog::checkCustomBaudRatePolicy(int idx){
     bool isCustomBaudRate = !ui->baudRateBox->itemData(idx).isValid();
     ui->baudRateBox->setEditable(isCustomBaudRate);
-    if (isCustomBaudRate) {
+    if (isCustomBaudRate && !loaded) {
         ui->baudRateBox->clearEditText();
         QLineEdit *edit = ui->baudRateBox->lineEdit();
         edit->setValidator(intValidator);
@@ -209,8 +219,7 @@ void SettingsDialog::fillPortsInfo()
     ui->serialPortInfoListBox->addItem(tr("Custom"));
 }
 
-void SettingsDialog::updateSettings()
-{
+void SettingsDialog::updateSettings(){
     currentSettings.name = ui->serialPortInfoListBox->currentText();
 
     if (ui->baudRateBox->currentIndex() == 4) {
@@ -236,10 +245,109 @@ void SettingsDialog::updateSettings()
     currentSettings.flowControl = static_cast<QSerialPort::FlowControl>(
                 ui->flowControlBox->itemData(ui->flowControlBox->currentIndex()).toInt());
     currentSettings.stringFlowControl = ui->flowControlBox->currentText();
-
     //currentSettings.localEchoEnabled = ui->localEchoCheckBox->isChecked();
 }
 
 void SettingsDialog::onDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight){
-    qDebug() << topLeft.row() << " " << topLeft.column();
+    qDebug() << "Data changed";
+    if(table->rowCount() == calibration->getPointsSize()){
+        for(int i = 0; i<table->rowCount(); i++){
+            QTableWidgetItem *leftCol = table->item(i, 0);
+            QTableWidgetItem *rightCol = table->item(i, 1);
+            if(leftCol != NULL && rightCol != NULL){
+                //qDebug() << leftCol->text() << " " << rightCol->text();
+                calibration->setPoint(i, leftCol->text().toDouble(), rightCol->text().toDouble());
+            }
+        }
+        updateGraph();
+    }
+}
+
+void SettingsDialog::loadSettings(){
+    qDebug() << "Loading settings";
+    QSettings settings(m_sSettingsFile, QSettings::IniFormat);
+
+    QString portName = settings.value("PORT", "").toString();
+    int baudRate = settings.value("BAUD", "").toInt();
+    if(portName != "" && baudRate != 0){
+        ui->serialPortInfoListBox->setCurrentText(portName);
+        if (ui->baudRateBox->currentIndex() == 4) {
+            ui->baudRateBox->setCurrentText(QString::number(baudRate));
+        } else {
+            ui->baudRateBox->setItemData(ui->baudRateBox->currentIndex(),
+                                         static_cast<QSerialPort::BaudRate>(baudRate));
+        }
+        loaded = true;
+    }else loaded = false;
+
+    int numOfPoints = settings.value("NumOfPoints", "").toInt();
+    for(int i = 0; i < numOfPoints; i++){
+        int X = settings.value("Px" + QString::number(i)).toInt();
+        double Y = settings.value("Py" + QString::number(i)).toDouble();
+        calibration->addPoint(X, Y);
+        qDebug() << X << Y << calibration->getPointsSize();
+        table->insertRow(table->rowCount());
+    }
+    updateTable();
+    qDebug() << portName << baudRate;
+}
+
+void SettingsDialog::saveSettings(){
+    QSettings settings(m_sSettingsFile, QSettings::IniFormat);
+    settings.setValue("PORT", currentSettings.name);
+    int baudRate;
+    if (ui->baudRateBox->currentIndex() == 4) {
+        baudRate = ui->baudRateBox->currentText().toInt();
+    } else {
+        baudRate = static_cast<QSerialPort::BaudRate>(
+                    ui->baudRateBox->itemData(ui->baudRateBox->currentIndex()).toInt());
+    }
+    settings.setValue("BAUD", baudRate);
+    settings.setValue("NumOfPoints", calibration->getPointsSize());
+    for(int i = 0; i < calibration->getPointsSize(); i++){
+        settings.setValue(("Px" + QString::number(i)), calibration->getPoint(i).x);
+        settings.setValue(("Py" + QString::number(i)), calibration->getPoint(i).y);
+    }
+}
+
+void SettingsDialog::changedByUser(){
+    loaded = false;
+}
+
+void SettingsDialog::on_minusButton_clicked(){
+    if(table->rowCount() != 0){
+        table->removeRow(table->rowCount()-1);
+        calibration->removeLastPoint();
+        updateTable();
+    }
+}
+
+void SettingsDialog::on_plusButton_clicked(){
+    qDebug() << "triggered, row count: " << table->rowCount();
+    table->insertRow(table->rowCount());
+    calibration->addPoint(0, 0);
+    updateTable();
+}
+
+void SettingsDialog::updateTable(){
+    qDebug() << "updating, row count: " << table->rowCount();
+    for(int row = 0; row <= table->rowCount(); ++row){
+        QTableWidgetItem *leftCol = new QTableWidgetItem(tr("%1").arg(calibration->getPoint(row).x));
+        QTableWidgetItem *rightCol = new QTableWidgetItem(tr("%1").arg(calibration->getPoint(row).y));
+        table->setItem(row, 0, leftCol);
+        table->setItem(row, 1, rightCol);
+    }
+}
+
+void SettingsDialog::updateGraph(){
+    xArray.resize(calibration->getPointsSize());
+    yArray.resize(calibration->getPointsSize());
+
+    for(int i = 0; i < calibration->getPointsSize(); i++){
+        xArray[i] = calibration->getPoint(i).x;
+        yArray[i] = calibration->getPoint(i).y;
+    }
+    calibPlot->graph(0)->setData(xArray, yArray);
+    calibPlot->yAxis->setRangeUpper(calibration->getHighest().y);
+    calibPlot->replot();
 }

@@ -38,6 +38,11 @@ class Calibration : public GenSpectrum {
 public:
     Calibration();
     void addPoint(int, double);
+    void setPoint(int, double, double);
+    void removeLastPoint();
+    point getPoint(int);
+    int getPointsSize();
+    point getHighest();
 private:
     QVector<point> points;
     void interpolate();

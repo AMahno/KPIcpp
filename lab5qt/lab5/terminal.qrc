@@ -14,5 +14,6 @@
         <file>images/leftRed.png</file>
         <file>images/rightGreen.png</file>
         <file>images/rightRed.png</file>
+        <file>images/icon.png</file>
     </qresource>
 </RCC>

@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1482397688 source:c:\cppworkspace\mathlab72\main.cpp
+	<iostream>
+	<cmath>
+

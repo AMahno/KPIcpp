@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //timer, contorls and progress bar setup
+    //timer, controls and progress bar setup
     timer = new QTimer;
     timer->setInterval(1000);
     ui->lineEdit->setText("1000");
@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //add widgets to UI
     ui->verticalLayout->addWidget(wGraphic);
     ui->verticalLayout->addWidget(console);
-    console->setFixedHeight(100);
+    console->setFixedHeight(70);
 
     //set chart range
     wGraphic->xAxis->setRange(0,1000);
@@ -125,6 +125,7 @@ MainWindow::~MainWindow(){
 
 void MainWindow::openSerialPort(){
     SettingsDialog::Settings p = settings->settings();
+    qDebug() << p.name << p.baudRate << p.dataBits << p.parity << p.stopBits << p.flowControl;
     serial->setPortName(p.name);
     serial->setBaudRate(p.baudRate);
     serial->setDataBits(p.dataBits);
@@ -142,8 +143,8 @@ void MainWindow::openSerialPort(){
                           .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
         ui->startbutton->setEnabled(true);
     } else {
-        QMessageBox::critical(this, tr("Error"), serial->errorString());
-
+        //QMessageBox::critical(this, tr("Error"), serial->errorString());
+        console->putData("Serial Error! " + serial->errorString() + '\n');
         showStatusMessage(tr("Open error"));
     }
 }
@@ -183,18 +184,20 @@ void MainWindow::readData(){
     console->putData("\n");
 
     if(autoscale){
-        wGraphic->yAxis->setRangeUpper(spectrum->getMax()*1.1);
+        xRange = spectrum->getMax()*1.1;
+        wGraphic->yAxis->setRangeUpper(xRange);
     }
     bars->setData(coords, spectrum->getStorage());
     updateLines();
-    updateChannelData();
     wGraphic->replot();
 }
 
 
 void MainWindow::handleError(QSerialPort::SerialPortError error){
     if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        //QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        console->putData("Serial Error! " + serial->errorString());
+        on_stopbutton_clicked();
         closeSerialPort();
     }
 }
@@ -210,6 +213,7 @@ void MainWindow::initActionsConnections(){
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionConfigure, &QAction::triggered, settings, &MainWindow::show);
+    connect(ui->actionConfigure, &QAction::triggered, settings, &SettingsDialog::changedByUser);
     connect(ui->actionClear, &QAction::triggered, console, &Console::clear);
     connect(ui->actionClear, &QAction::triggered, this, &MainWindow::clearChart);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
@@ -221,9 +225,6 @@ void MainWindow::showStatusMessage(const QString &message){
     status->setText(message);
 }
 
-void MainWindow::on_actionClear_triggered(){
-
-}
 
 void MainWindow::clearChart(){
     spectrum->clearSpectrum();
@@ -278,7 +279,8 @@ void MainWindow::on_actionScaleDown_triggered(){
 void MainWindow::on_actionAutoscale_triggered(){
     if(autoscale){
         autoscale = false;
-        xRange = spectrum->getMax()*1.1;
+        if(spectrum->getMax()!=0)
+            xRange = spectrum->getMax()*1.1;
     }else{
         autoscale = true;
     }
@@ -321,9 +323,12 @@ void MainWindow::on_moveLineRight_triggered(){
 }
 
 void MainWindow::updateChannelData(){
+    SettingsDialog::Settings p = settings->settings();
     ui->channelData->setText("Pulses at channel "
         + QString::number(leftLinePos) + ": "
-        + QString::number(spectrum->getChannel(leftLinePos)));
+        + QString::number(spectrum->getChannel(leftLinePos)) + ". "
+        + "Channel's energy: "
+        + QString::number(p.curCalibration->getStorage().at(leftLinePos)) + " MeV.");
 }
 
 void MainWindow::on_moveLineLeft_g_triggered(){
@@ -337,4 +342,9 @@ void MainWindow::on_moveLineRight_g_triggered(){
     rightLinePos++;
     updateLines();
     wGraphic->replot();
+}
+
+void MainWindow::on_actionClear_triggered(){
+    xRange = 10000;
+    updateLines();
 }
